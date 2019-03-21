@@ -1,9 +1,11 @@
 import unittest
+from unittest.mock import MagicMock
 from stringCalculator import StringCalculator
 
 class TestStringCalculator(unittest.TestCase):
     def setUp(self):
-        self.stringCalculator = StringCalculator();
+        self.logger = MagicMock();
+        self.stringCalculator = StringCalculator(self.logger);
 
     def test_add_empty_string(self):
         self.assertEqual(self.stringCalculator.add(""), 0);
@@ -38,6 +40,14 @@ class TestStringCalculator(unittest.TestCase):
 
     def test_add_mutilple_delimeter(self):
         self.assertEqual(self.stringCalculator.add("//[***][;]\n1***2;3"), 6);
+
+    def test_logger(self):
+        self.stringCalculator.add("1,2");
+        self.logger.write.assert_called_once_with("3");
+
+    def test_logger_with_exception(self):
+        self.logger.write.side_effect = Exception("logging has failed")
+        self.assertEqual(self.stringCalculator.add("1,2"), "logging has failed")
 
 if __name__ == '__main__':
     unittest.main()
