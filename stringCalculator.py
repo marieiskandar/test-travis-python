@@ -1,19 +1,23 @@
 class StringCalculator:
 
-    def __init__(self):
-        pass
+    def __init__(self, logger):
+        self.logger = logger;
 
     def add(self,numbers):
         list_of_delimiters, numbers = self.get_delimiter(numbers);
         if(len(numbers)) == 0:
-            return 0;
+            result = 0;
         else:
             list_of_numbers = self.get_list_of_numbers(numbers, list_of_delimiters)
             list_of_negative_numbers = list(filter(lambda x: int(x) < 0, list_of_numbers))
             if(len(list_of_negative_numbers) > 0):
                 raise Exception("negatives not allowed: " +  " ".join(str(x) for x in list_of_negative_numbers));
-            return sum(int(number) for number in list_of_numbers)
-
+            result = sum(int(number) for number in list_of_numbers)
+        try :
+            self.logger.write(str(result));
+        except :
+            return "logging has failed"
+        return result
 
     def get_delimiter(self,numbers):
         if numbers[:2] == "//":
